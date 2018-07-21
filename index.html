@@ -85,7 +85,7 @@
 	
 	<script>
 	
-		const VERSION = "0.4.1";
+		const VERSION = "0.4.2";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -219,7 +219,8 @@
 			DB_REF.child("tiles").child(key).on("value", function(snapshot){
 				test = snapshot.val();
 				try{
-				objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
+					objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
+					objects[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
 				setTextureSingle(objectNode.indexOf(key));
 				}catch(e){}
 			});
