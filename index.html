@@ -82,21 +82,26 @@
 			<img id='i4' src='assets/integrity4.png'/>
 		</a-assets>
 		
-		<a-entity id="version" position='-20 15 -15' rotation='0 0 0' n-text='text: Version :  ;' ></a-entity>
+		<a-entity id="version" position='-20 5 -15' rotation='0 0 0' n-text='text: Version :  ;' ></a-entity>
+		<a-box scale="100 0.1 100" n-mesh-collider="type:environment" color="green"></a-box>
 		
+		<a-entity id="tippyTop" position="10 60 10"></a-entity>
+		<a-box n-mesh-collider="type:environment" position="10 59.9 10" scale="1 0.1 1"></a-box>
+		<a-entity position="-7 0.5 -10" n-portal='targetEntity: #tippyTop'></a-entity>
 	</a-scene>
 	
 	</body>
 	
 	<script>
 	
-		const VERSION = "0.5";
+		const VERSION = "1.0";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
 		const DB_REF = new Firebase("https://vrdropper.firebaseio.com");
 		const SCALE = 2;
-		const SIZE = 10;
+		const SIZE = 15;
+		const HEIGHT = 50;
 		
 		var objects = [];
 		var objectNode = [];
@@ -127,16 +132,14 @@
 		
 		function main(){
 			console.log("Main");
-			
 			readFirebaseTest();
 		}
 		
 		function setUpTiles(){
-			
 			for(var x=0; x<SIZE; x++){
 				for(var z=0; z<SIZE; z++){
 					var tile = document.createElement('a-box');
-					tile.setAttribute('position', z*SCALE+' 1 '+x*SCALE);
+					tile.setAttribute('position', z*SCALE+' '+HEIGHT+' '+x*SCALE);
 					tile.setAttribute('scale', SCALE + ' 1 ' + SCALE);
 					tile.setAttribute('src', '#i4');
 					tile.setAttribute('n-mesh-collider', 'type:environment');
@@ -144,11 +147,9 @@
 
 					objects.push(tile);
 					scene.appendChild(tile);
-					
-					//console.log("applepie");
+				
 				}
 			}
-			
 			
 			//why am i doing this here??/
 			try{
@@ -162,7 +163,7 @@
 			for(var x=0; x<SIZE; x++){
 				for(var z=0; z<SIZE; z++){
 					var colliderTile = document.createElement('a-box');
-					colliderTile.setAttribute('position', x*SCALE+' 4 '+z*SCALE);
+					colliderTile.setAttribute('position', x*SCALE+' '+(3+HEIGHT)+' '+z*SCALE);
 					colliderTile.setAttribute('scale', SCALE + ' 2 ' + SCALE);
 					colliderTile.setAttribute('color', 'green');
 					colliderTile.setAttribute('opacity', '0');
@@ -183,8 +184,6 @@
 		}
 		
 		function setTextureSingle(boxId){
-			//console.log("Setting texture of box " + boxId);
-			//console.log(objectsCollider[boxId].getAttribute('box_integrity'));
 			switch(parseInt(objectsCollider[boxId].getAttribute('box_integrity'))){
 				case 1:
 					objects[boxId].setAttribute('src','#i1');
@@ -210,7 +209,6 @@
 		}
 		
 		function writeFirebase(bint){
-			//console.log("writing to firebase " + bint);
 			var tileKey = DB_REF.child("tiles").push({integrity: bint}).key();
 			objectNode.push(tileKey);
 		}
@@ -227,9 +225,6 @@
 					objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
 					objects[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
 					setTextureSingle(objectNode.indexOf(key));
-					
-					//console.log(objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity'));
-					
 				}catch(e){}
 			});
 		}
@@ -242,33 +237,23 @@
 			DB_REF.child("tiles").on("value", function(snapshot){
 				temp = snapshot.val();
 			});
-			
 			setTimeout(function(){
-				//console.log("test");
 				try{
 					for (var i=0; i<SIZE*SIZE; i++){
 						objectNode.push(Object.keys(temp)[i]);
 						readFirebase(objectNode[i]);
 					}
 				}catch(e){}	
-			//console.log(objectNode);
-				
-			},1000);
-			
-			
-
-			
+			},1000);			
 		}
 		
 		setInterval(function(){
-			//console.log("weeee");
 			try{
 			for (var i=0; i<SIZE*SIZE; i++){
 				readFirebase(objectNode[i]);
 			}	
 			}catch(e){}
 		},200);
-		
 		//maybe not need an extra function for this?
 		function resetGame(){
 			for (var i=0; i<objects.length; i++) {
@@ -278,7 +263,7 @@
 			objects = [];
 			objectsCollider = [];
 			objectNode = [];
-			
+	
 			main();
 		}
 		
@@ -290,20 +275,14 @@
 			for (var i=0; i<SIZE*SIZE; i++){
 				//writeFirebase(4);
 			}
-			
-			
 		});
 		
 		resetBox.addEventListener('cursordown', function(){
 			console.log("resetBox clicked!");
-			
 			wipeFirebase();
 			for (var i=0; i<SIZE*SIZE; i++){
 				writeFirebase(4);
 			}
-			
-			
 		});
-		
-		
+	
 </script>
