@@ -78,12 +78,16 @@
 			<img id='i4' src='assets/integrity4.png'/>
 		</a-assets>
 		
+		<a-entity id="version" position='-20 15 -15' rotation='0 0 0' n-text='text: Version :  ;' ></a-entity>
+		
 	</a-scene>
 	
 	</body>
 	
 	<script>
 	
+		const VERSION = 0.1;
+		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
 		const DB_REF = new Firebase("https://vrdropper.firebaseio.com");
@@ -104,6 +108,7 @@
 		restartBox.position.set(-10, 0, -10);
 		sim.scene.add(restartBox);
 		//
+		document.querySelector('#version').setAttribute('n-text','text: Version : ' + VERSION);
 		main();
 		
 		function main(){
