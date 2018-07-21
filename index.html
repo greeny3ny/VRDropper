@@ -86,7 +86,7 @@
 	
 	<script>
 	
-		const VERSION = "0.1.1";
+		const VERSION = "0.1.2";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -112,14 +112,17 @@
 		//
 		document.querySelector('#version').setAttribute('n-text','text: Version : ' + VERSION);
 		main();
+		DB_REF.child("reset").on("child_changed", function(snapshot){
+			resetDetector = snapshot.val();
+			resetGame();
+		});
 		
 		function main(){
-			wipeFirebase();
 			console.log("Main");
 			setUpTiles();
 			setUpColliders();
 			
-			
+			console.log(objectNode);
 		}
 		
 		function setUpTiles(){
@@ -132,26 +135,21 @@
 					tile.setAttribute('src', '#i4');
 					tile.setAttribute('n-mesh-collider', 'type:environment');
 					tile.setAttribute('box_collide','box_id:'+(x+(z*SIZE))+';box_integrity:4;');
+
 					objects.push(tile);
 					scene.appendChild(tile);
 					
-					//wipeFirebase();
-					writeFirebase(4);
-					
-					
-					
-					
+					console.log("applepie");
 				}
 			}
 			
-			DB_REF.child("reset").on("child_changed", function(snapshot){
-				resetDetector = snapshot.val();
-				resetGame();
-			});
 			
-			for (var i=0; i<SIZE*SIZE; i++){
-				readFirebase(objectNode[i]);
-			}
+			
+			try{
+				for (var i=0; i<SIZE*SIZE; i++){
+					readFirebase(objectNode[i]);
+				}
+			}catch(e){}
 		}
 		
 		function setUpColliders(){
@@ -166,6 +164,8 @@
 					colliderTile.setAttribute('box_collide','box_id:'+(x+(z*SIZE))+';box_integrity:4;');
 					objectsCollider.push(colliderTile);
 					scene.appendChild(colliderTile);
+					
+					
 				}
 			}
 		}
@@ -201,6 +201,7 @@
 		
 		function wipeFirebase(){
 			DB_REF.child("tiles").remove();
+			console.log("firebase wiped!");
 		}
 		
 		function writeFirebase(bint){
@@ -228,12 +229,10 @@
 		
 		//maybe not need an extra function for this?
 		function resetGame(){
-			try{
-				for (var i=0; i<objects.length; i++) {
-					scene.removeChild(objects[i]);
-					scene.removeChild(objectsCollider[i]);
-				}
-			}catch(e){}
+			for (var i=0; i<objects.length; i++) {
+				scene.removeChild(objects[i]);
+				scene.removeChild(objectsCollider[i]);
+			}
 			objects = [];
 			objectsCollider = [];
 			objectNode = [];
@@ -245,6 +244,12 @@
 			console.log("resetBox clicked!");
 			resetDetector = !resetDetector;
 			DB_REF.child("reset").update({res:resetDetector});
+			wipeFirebase();
+			for (var i=0; i<SIZE*SIZE; i++){
+				writeFirebase(4);
+			}
+			
+			
 		});
 		
 		
