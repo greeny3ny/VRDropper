@@ -85,7 +85,7 @@
 	
 	<script>
 	
-		const VERSION = "0.3";
+		const VERSION = "0.3.1";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -217,7 +217,7 @@
 		
 		function readFirebase(key){
 			var test;
-			DB_REF.child("tiles").child(key).on("value", function(snapshot){
+			DB_REF.child("tiles").child(key).on("child_changed", function(snapshot){
 				test = snapshot.val();
 				//console.log("child changed!");
 				//console.log(test.integrity);
