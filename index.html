@@ -47,14 +47,19 @@
 				object.addEventListener('jointcollisionenter', handleJoin);		
 				function handleJoin(event)
 				{
+					readFirebase(objectNode[id]);
+					console.log();
+					console.log("integrity at " + self.data.box_integrity);
 					console.log("box " + id);
 					console.log("integrity drop");
-					self.data.box_integrity --;
+					//self.data.box_integrity --;
+					objectsCollider[id].setAttribute('box_integrity', (objectsCollider[id].getAttribute('box_integrity')-1));
+					
 					console.log("integrity now at " + self.data.box_integrity);
 					//updateFirebase(objectNode[id]);
 					
 					console.log("node : "+ objectNode[id]);
-					updateFirebase(objectNode[id], self.data.box_integrity);
+					updateFirebase(objectNode[id], objectsCollider[id].getAttribute('box_integrity'));
 					
 					setTextures();
 				}// end function handle join
@@ -85,7 +90,7 @@
 	
 	<script>
 	
-		const VERSION = "0.4.2";
+		const VERSION = "0.5";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -221,7 +226,10 @@
 				try{
 					objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
 					objects[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
-				setTextureSingle(objectNode.indexOf(key));
+					setTextureSingle(objectNode.indexOf(key));
+					
+					//console.log(objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity'));
+					
 				}catch(e){}
 			});
 		}
