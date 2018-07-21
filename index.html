@@ -56,7 +56,6 @@
 					console.log("node : "+ objectNode[id]);
 					updateFirebase(objectNode[id], self.data.box_integrity);
 					
-					
 					setTextures();
 				}// end function handle join
 				
@@ -86,7 +85,7 @@
 	
 	<script>
 	
-		const VERSION = "0.2.0";
+		const VERSION = "0.2.1";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -128,7 +127,7 @@
 			for(var x=0; x<SIZE; x++){
 				for(var z=0; z<SIZE; z++){
 					var tile = document.createElement('a-box');
-					tile.setAttribute('position', x*SCALE+' 1 '+z*SCALE);
+					tile.setAttribute('position', z*SCALE+' 1 '+x*SCALE);
 					tile.setAttribute('scale', SCALE + ' 1 ' + SCALE);
 					tile.setAttribute('src', '#i4');
 					tile.setAttribute('n-mesh-collider', 'type:environment');
