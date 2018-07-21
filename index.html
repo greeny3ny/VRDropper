@@ -85,7 +85,7 @@
 	
 	<script>
 	
-		const VERSION = "0.2.1";
+		const VERSION = "0.3";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -105,9 +105,13 @@
 			map:bTex, 
 			side:THREE.DoubleSide 
 		}); 
-		var restartBox = new THREE.Mesh(box1Geo, bMat);
-		restartBox.position.set(-10, 0, -10);
-		sim.scene.add(restartBox);
+		var refreshBox = new THREE.Mesh(box1Geo, bMat);
+		var resetBox = new THREE.Mesh(box1Geo, bMat);
+		//var refreshBox = new THREE.Mesh(box1Geo, bMat);
+		refreshBox.position.set(-10, 0, -10);
+		resetBox.position.set(-10, 2, -10);
+		sim.scene.add(resetBox);
+		sim.scene.add(refreshBox);
 		//
 		document.querySelector('#version').setAttribute('n-text','text: Version : ' + VERSION);
 		main();
@@ -269,13 +273,24 @@
 			main();
 		}
 		
-		restartBox.addEventListener('cursordown', function(){
+		refreshBox.addEventListener('cursordown', function(){
 			console.log("resetBox clicked!");
 			resetDetector = !resetDetector;
 			DB_REF.child("reset").update({res:resetDetector});
 			//wipeFirebase();
 			for (var i=0; i<SIZE*SIZE; i++){
 				//writeFirebase(4);
+			}
+			
+			
+		});
+		
+		resetBox.addEventListener('cursordown', function(){
+			console.log("resetBox clicked!");
+			
+			wipeFirebase();
+			for (var i=0; i<SIZE*SIZE; i++){
+				writeFirebase(4);
 			}
 			
 			
