@@ -86,7 +86,7 @@
 	
 	<script>
 	
-		const VERSION = "0.1.2";
+		const VERSION = "0.1.3";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -119,10 +119,8 @@
 		
 		function main(){
 			console.log("Main");
-			setUpTiles();
-			setUpColliders();
 			
-			console.log(objectNode);
+			readFirebaseTest();
 		}
 		
 		function setUpTiles(){
@@ -139,12 +137,12 @@
 					objects.push(tile);
 					scene.appendChild(tile);
 					
-					console.log("applepie");
+					//console.log("applepie");
 				}
 			}
 			
 			
-			
+			//why am i doing this here??/
 			try{
 				for (var i=0; i<SIZE*SIZE; i++){
 					readFirebase(objectNode[i]);
@@ -164,8 +162,6 @@
 					colliderTile.setAttribute('box_collide','box_id:'+(x+(z*SIZE))+';box_integrity:4;');
 					objectsCollider.push(colliderTile);
 					scene.appendChild(colliderTile);
-					
-					
 				}
 			}
 		}
@@ -227,6 +223,24 @@
 			});
 		}
 		
+		function readFirebaseTest(){
+			var temp;
+			setUpTiles();
+			setUpColliders();
+			DB_REF.child("tiles").on("value", function(snapshot){
+				temp = snapshot.val();
+			});
+			try{
+				for (var i=0; i<SIZE*SIZE; i++){
+					objectNode.push(Object.keys(temp)[i]);
+					readFirebase(objectNode[i]);
+				}
+			}catch(e){}	
+			
+
+			
+		}
+		
 		//maybe not need an extra function for this?
 		function resetGame(){
 			for (var i=0; i<objects.length; i++) {
@@ -244,9 +258,9 @@
 			console.log("resetBox clicked!");
 			resetDetector = !resetDetector;
 			DB_REF.child("reset").update({res:resetDetector});
-			wipeFirebase();
+			//wipeFirebase();
 			for (var i=0; i<SIZE*SIZE; i++){
-				writeFirebase(4);
+				//writeFirebase(4);
 			}
 			
 			
