@@ -86,7 +86,7 @@
 	
 	<script>
 	
-		const VERSION = "0.1.3";
+		const VERSION = "0.2.0";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -172,11 +172,12 @@
 					setTextureSingle(i+(j*SIZE));
 				}
 			}
-			
 		}
 		
 		function setTextureSingle(boxId){
-			switch(objectsCollider[boxId].getAttribute('box_collide').box_integrity){
+			console.log("Setting texture of box " + boxId);
+			console.log(objectsCollider[boxId].getAttribute('box_integrity'));
+			switch(parseInt(objectsCollider[boxId].getAttribute('box_integrity'))){
 				case 1:
 					objects[boxId].setAttribute('src','#i1');
 				break;
@@ -184,6 +185,7 @@
 					objects[boxId].setAttribute('src','#i2');
 				break;
 				case 3:
+					console.log("banana");
 					objects[boxId].setAttribute('src','#i3');
 				break;
 				case 4:
@@ -212,30 +214,44 @@
 		
 		function readFirebase(key){
 			var test;
-			DB_REF.child("tiles").child(key).on("child_changed", function(snapshot){
+			DB_REF.child("tiles").child(key).on("value", function(snapshot){
 				test = snapshot.val();
-				console.log("child changed!");
-				console.log(test);
-				console.log(objectNode.indexOf(key));
+				//console.log("child changed!");
+				//console.log(test.integrity);
+				//console.log(objectNode.indexOf(key));
+				console.log(" ");
+				objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
+				console.log(objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity'));
+				//objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity')
+				//objectsCollider[boxId].getAttribute('box_integrity')
 				
-				objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test);
+				
+				//console.log(objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity'));
 				setTextureSingle(objectNode.indexOf(key));
 			});
 		}
 		
 		function readFirebaseTest(){
+			console.log("initial firebase read");
 			var temp;
 			setUpTiles();
 			setUpColliders();
 			DB_REF.child("tiles").on("value", function(snapshot){
 				temp = snapshot.val();
 			});
-			try{
-				for (var i=0; i<SIZE*SIZE; i++){
-					objectNode.push(Object.keys(temp)[i]);
-					readFirebase(objectNode[i]);
-				}
-			}catch(e){}	
+			
+			setTimeout(function(){
+				console.log("test");
+				try{
+					for (var i=0; i<SIZE*SIZE; i++){
+						objectNode.push(Object.keys(temp)[i]);
+						readFirebase(objectNode[i]);
+					}
+				}catch(e){}	
+			console.log(objectNode);
+				
+			},1000);
+			
 			
 
 			
