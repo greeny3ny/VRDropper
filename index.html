@@ -85,7 +85,7 @@
 	
 	<script>
 	
-		const VERSION = "0.4";
+		const VERSION = "0.4.1";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -218,10 +218,10 @@
 			var test;
 			DB_REF.child("tiles").child(key).on("value", function(snapshot){
 				test = snapshot.val();
-				//console.log(" ");
+				try{
 				objectsCollider[objectNode.indexOf(key)].setAttribute('box_integrity',test.integrity);
-				//console.log(objectsCollider[objectNode.indexOf(key)].getAttribute('box_integrity'));
 				setTextureSingle(objectNode.indexOf(key));
+				}catch(e){}
 			});
 		}
 		
@@ -253,9 +253,11 @@
 		
 		setInterval(function(){
 			//console.log("weeee");
+			try{
 			for (var i=0; i<SIZE*SIZE; i++){
 				readFirebase(objectNode[i]);
 			}	
+			}catch(e){}
 		},200);
 		
 		//maybe not need an extra function for this?
