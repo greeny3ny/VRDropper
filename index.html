@@ -49,6 +49,7 @@
 				object.addEventListener('jointcollisionenter', handleJoin);		
 				function handleJoin(event)
 				{
+					standTime = 0;
 					readFirebase(objectNode[id]);
 					console.log();
 					console.log("integrity at " + self.data.box_integrity);
@@ -67,12 +68,30 @@
 				}// end function handle join
 				
 				//joint collision leave
-				object.addEventListener('jointcollisionleave', handleLeave);
-				function handleLeave(event)
+				object.addEventListener('jointcollision', handleCollide);
+				function handleCollide(event)
 				{
+					console.log(standTime);
+					checkStandTime(id);
 				}//end function handle leave
 			}
 		}); //end base collision
+		
+		var standTime = 0;
+		//checks amount of time stood on box
+		function checkStandTime(id){
+			if (standTime > 3){
+				objectsCollider[id].setAttribute('box_integrity', (objectsCollider[id].getAttribute('box_integrity')-1));
+				updateFirebase(objectNode[id], objectsCollider[id].getAttribute('box_integrity'));
+				setTextures();
+				standTime = 0;
+			}
+		}
+		
+		setInterval(updateStandTime,1000);
+		function updateStandTime(){
+			standTime ++;
+		}
 	</script>
 	
 	<a-scene altspace="fullspace:true;" sync-system="author: greeny3ny; app: dropper">
@@ -113,7 +132,7 @@
 	
 	<script>
 	
-		const VERSION = "1.3";
+		const VERSION = "1.5";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
