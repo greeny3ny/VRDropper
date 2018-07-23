@@ -75,7 +75,7 @@
 		}); //end base collision
 	</script>
 	
-	<a-scene altspace="fullspace:true;">
+	<a-scene altspace="fullspace:true;" sync-system="author: greeny3ny; app: dropper">
 	
 		<a-assets>
 			<img id='i1' src='assets/integrity1.png'/>
@@ -96,6 +96,7 @@
 		
 		<a-entity id='time1' scale="1 1 1" position='15 60 -15' n-text='text: timer;font-size:50;width:100;'></a-entity>
 		<a-entity id='time2' scale="1 1 1" position='-20 4 -15' n-text='text: timer;width:100;'></a-entity>
+		<a-entity id='leaderboard' scale="1 1 1" position='-10 5 -15' n-text='text: test;'></a-entity>
 		
 		<a-sky color="blue" radius="2000"></a-sky>
 	</a-scene>
@@ -104,7 +105,7 @@
 	
 	<script>
 	
-		const VERSION = "1.1";
+		const VERSION = "1.2";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -119,14 +120,19 @@
 		
 		var resetDetector = true;
 		//=====================================================
-		var box1Geo = new THREE.BoxGeometry(1, 1, 1); 
-		var bTex = new THREE.ImageUtils.loadTexture("assets/test.png");
-		var bMat = new THREE.MeshBasicMaterial({ 
-			map:bTex, 
+		var boxGeo = new THREE.BoxGeometry(1, 1, 1); 
+		var resetTex = new THREE.TextureLoader().load("assets/buttons/resetGame.png");
+		var resetMat = new THREE.MeshBasicMaterial({ 
+			map:resetTex, 
 			side:THREE.DoubleSide 
 		}); 
-		var refreshBox = new THREE.Mesh(box1Geo, bMat);
-		var resetBox = new THREE.Mesh(box1Geo, bMat);
+		var refreshTex = new THREE.TextureLoader().load("assets/buttons/refreshGame.png");
+		var refreshMat = new THREE.MeshBasicMaterial({ 
+			map:refreshTex, 
+			side:THREE.DoubleSide 
+		}); 
+		var refreshBox = new THREE.Mesh(boxGeo, resetMat);
+		var resetBox = new THREE.Mesh(boxGeo, refreshMat);
 		//var refreshBox = new THREE.Mesh(box1Geo, bMat);
 		refreshBox.position.set(-10, 0, -10);
 		resetBox.position.set(-10, 2, -10);
@@ -134,6 +140,7 @@
 		sim.scene.add(refreshBox);
 		//
 		document.querySelector('#version').setAttribute('n-text','text: Version : ' + VERSION);
+		readFBTimes();
 		main();
 		setTimeout(refreshGame, 1000);
 		DB_REF.child("reset").on("child_changed", function(snapshot){
