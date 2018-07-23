@@ -29,6 +29,9 @@ AFRAME.registerComponent('player_fall',
     {
 		console.log("box " + self.data.box_id);
 		if (self.data.box_id===2 && started){
+			
+			document.querySelector('#topPlatform').setAttribute('position','15 59.9 15');
+			
 			finaltime = time;
 			times[0] = user;
 			times[1] = finaltime;
@@ -43,6 +46,8 @@ AFRAME.registerComponent('player_fall',
 			time = 0;
 			console.log("ticky");
 			started = true;
+			
+			setTimeout(spawnDrop, 5000);
 		}		
     }// end function handle join
 	
@@ -68,14 +73,20 @@ function tick(){
 	time+=0.1;
 	time = Math.round(time*10)/10;
 	if (started){
-		document.querySelector('#time1').setAttribute('n-text','text: Time alive : ' + time);
+		//document.querySelector('#time1').setAttribute('n-text','text: Time alive : ' + time);
 		document.querySelector('#time2').setAttribute('n-text','text: Time alive : ' + time);
 	}
 	else 
 	{
-		document.querySelector('#time1').setAttribute('n-text','text: Time alive : ' + finaltime);
+		//document.querySelector('#time1').setAttribute('n-text','text: Time alive : ' + finaltime);
 		document.querySelector('#time2').setAttribute('n-text','text: Time alive : ' + finaltime);
 	}
+}
+
+//drops spawn after 5 seconds
+function spawnDrop(){
+	console.log("dropping spawn!");
+	document.querySelector('#topPlatform').setAttribute('position','15 -10 15');
 }
 
 function writeUserTimes(){
@@ -83,11 +94,14 @@ function writeUserTimes(){
 	DB_REF.child("times").push({times:times});
 }
 
+var isMod = false;
 function getUser1(){
 	altspace.getUser().then(function(user1){
 		console.log(user1);
 		user = user1.displayName;
+		isMod = user1.isModerator;
 		console.log(user);
+		console.log(isMod);
 	});
 }
 
