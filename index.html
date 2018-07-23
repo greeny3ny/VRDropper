@@ -18,6 +18,8 @@
 	  firebase.initializeApp(config);
 	</script>
 
+	<script src="js/fall.js"></script>
+	
 	<script>
 		AFRAME.registerComponent('box_collide',
 		{
@@ -85,16 +87,24 @@
 		<a-entity id="version" position='-20 5 -15' rotation='0 0 0' n-text='text: Version :  ;' ></a-entity>
 		<a-box scale="100 0.1 100" n-mesh-collider="type:environment" color="green"></a-box>
 		
-		<a-entity id="tippyTop" position="10 60 10"></a-entity>
-		<a-box n-mesh-collider="type:environment" position="10 59.9 10" scale="1 0.1 1"></a-box>
+		<a-entity id="tippyTop" position="15 60 15"></a-entity>
+		<a-box n-mesh-collider="type:environment" position="15 59.9 15" scale="1 0.1 1"></a-box>
 		<a-entity position="-7 0.5 -10" n-portal='targetEntity: #tippyTop'></a-entity>
+		
+		<a-box id="fallCheck" player_fall="box_id:2" position="15 40 15" scale="50 1 50" color="black" opacity="0.2"></a-box>
+		<a-box id="teleport" player_fall="box_id:1" position="-7 1.5 -10" scale="2 3 2" color="black" opacity="0.5"></a-box>
+		
+		<a-entity id='time1' scale="1 1 1" position='15 60 -15' n-text='text: timer;font-size:50;width:100;'></a-entity>
+		<a-entity id='time2' scale="1 1 1" position='-20 4 -15' n-text='text: timer;width:100;'></a-entity>
+		
+		<a-sky color="blue" radius="2000"></a-sky>
 	</a-scene>
 	
 	</body>
 	
 	<script>
 	
-		const VERSION = "1.0";
+		const VERSION = "1.1";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -125,9 +135,10 @@
 		//
 		document.querySelector('#version').setAttribute('n-text','text: Version : ' + VERSION);
 		main();
+		setTimeout(refreshGame, 1000);
 		DB_REF.child("reset").on("child_changed", function(snapshot){
 			resetDetector = snapshot.val();
-			resetGame();
+			refreshGame();
 		});
 		
 		function main(){
@@ -255,7 +266,8 @@
 			}catch(e){}
 		},200);
 		//maybe not need an extra function for this?
-		function resetGame(){
+		function refreshGame(){
+			console.log("local refresh!");
 			for (var i=0; i<objects.length; i++) {
 				scene.removeChild(objects[i]);
 				scene.removeChild(objectsCollider[i]);
@@ -267,14 +279,14 @@
 			main();
 		}
 		
-		refreshBox.addEventListener('cursordown', function(){
-			console.log("resetBox clicked!");
+		function refresh(){
+			console.log("refresh clicked!");
 			resetDetector = !resetDetector;
-			DB_REF.child("reset").update({res:resetDetector});
-			//wipeFirebase();
-			for (var i=0; i<SIZE*SIZE; i++){
-				//writeFirebase(4);
-			}
+			DB_REF.child("reset").update({res:resetDetector}); //toggle a refresh for EVERYONE!
+		}
+		
+		refreshBox.addEventListener('cursordown', function(){
+			refreshGame();
 		});
 		
 		resetBox.addEventListener('cursordown', function(){
@@ -283,6 +295,7 @@
 			for (var i=0; i<SIZE*SIZE; i++){
 				writeFirebase(4);
 			}
+			refresh();
 		});
 	
 </script>
