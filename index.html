@@ -71,16 +71,17 @@
 				object.addEventListener('jointcollision', handleCollide);
 				function handleCollide(event)
 				{
-					console.log(standTime);
-					checkStandTime(id);
+					//console.log(standTime);
+					checkStandTime(id, objectsCollider[id].getAttribute('box_integrity'));
 				}//end function handle leave
 			}
 		}); //end base collision
 		
 		var standTime = 0;
 		//checks amount of time stood on box
-		function checkStandTime(id){
-			if (standTime > 3){
+		function checkStandTime(id, integ){
+			if (standTime >= integ){
+				//console.log(standTime + " " + integ);
 				objectsCollider[id].setAttribute('box_integrity', (objectsCollider[id].getAttribute('box_integrity')-1));
 				updateFirebase(objectNode[id], objectsCollider[id].getAttribute('box_integrity'));
 				setTextures();
@@ -132,7 +133,7 @@
 	
 	<script>
 	
-		const VERSION = "1.5";
+		const VERSION = "1.7";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -192,7 +193,6 @@
 
 					objects.push(tile);
 					scene.appendChild(tile);
-				
 				}
 			}
 			

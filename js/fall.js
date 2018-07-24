@@ -115,39 +115,55 @@ function readFBTimes(){
 		leaderBoard = snapshot.val();
 		test[counter] = leaderBoard;
 		counter ++;
-		console.log("counter" + counter);
+		//console.log("counter" + counter);
 	});
-	DB_REF.on("value", function(snap) {
-		console.log("promise over");
+	DB_REF.child("times").on("value", function(snap) {
+		//console.log("promise over");
 		updateLeaderboard();
 	});
 }
 function updateLeaderboard(){
 	board="Longest survival:";
 	//SORT TEST TIMES
-	sortTimes();
+	//sortTimes();
+	quickSort(0,test.length-1);
 	for (var i=test.length-1; i>=0;i--){
-	console.log(test[i].times);
+	//console.log(test[i].times);
 	board = board + "\n" + (test.length-i) + ": " + test[i].times[0] + " " + test[i].times[1];
 	}
 	document.querySelector('#leaderboard').setAttribute('n-text','fontSize:4; text:' + board);
 };
-function sortTimes(){
-	var swapped;
-	do {
-	swapped = false;
-	for (var i=0; i<(test.length-1);i++){
-		console.log("sorting");
-		//bubble sort for now - should upgrade to quicksort for efficiency
-		if (test[i].times[1] > test[i+1].times[1]){
-			var temp = test[i];
-			test[i] = test[i+1];
-			test[i+1] = temp;
-			swapped = true;
-		}		
-	}//end for
-	} while (swapped);
-	for (var i =0; i<test.length;i++){
-		console.log(test[i].times[1]);
+
+//quickSORT!!!!! (nicked this online bc i cba writing it myself
+function quickSort(left, right){
+	console.log("sorting");
+    var len = test.length, 
+    pivot,
+    partitionIndex;
+    if(left < right){
+		pivot = right;
+		partitionIndex = partition(pivot, left, right);
+		//sort left and right
+		quickSort(left, partitionIndex - 1);
+		quickSort(partitionIndex + 1, right);
 	}
 }
+function partition(pivot, left, right){
+	var pivotValue = test[pivot].times[1],
+		partitionIndex = left;
+
+	for(var i = left; i < right; i++){
+		if(test[i].times[1] < pivotValue){
+			swap(i, partitionIndex);
+			partitionIndex++;
+		}
+  }
+	swap(right, partitionIndex);
+	return partitionIndex;
+}
+function swap(i, j){
+	var temp = test[i];
+	test[i] = test[j];
+	test[j] = temp;
+}
+
