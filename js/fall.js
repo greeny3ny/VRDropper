@@ -46,7 +46,7 @@ AFRAME.registerComponent('player_fall',
 			time = 0;
 			console.log("ticky");
 			started = true;
-			
+			document.querySelector('#topPlatform').setAttribute('position','15 59.9 15');
 			setTimeout(spawnDrop, 5000);
 		}		
     }// end function handle join
