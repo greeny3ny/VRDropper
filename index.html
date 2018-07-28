@@ -120,7 +120,14 @@
 		<a-entity id='time2' scale="1 1 1" position='-20 4 -15' n-text='text: timer;width:100;'></a-entity>
 		<a-entity id='leaderboard' scale="1 1 1" position='-10 5 -15' n-text='text: test;'></a-entity>
 		
-		<a-box position='-15 5 -16' scale="20 10 1" color="blue"></a-box>
+		<a-entity id='leaderboard' scale="1 1 1" position='10 5 -15' n-text='text: 
+	This app is a test!
+	If it does not work click the REFRESH button
+		
+	The goal is to stay on the ICE PLATFORMS for as long as possible, and to knock your fellow players off the platforms!
+		;width:20'></a-entity>
+		
+		<a-box position='0 5 -16' scale="50 10 1" color="blue"></a-box>
 		<a-box id='ground' scale="500 0.1 500" n-mesh-collider="type:environment" material="src:#ground;repeat:10 10;"></a-box>
 		
 		<!-- -5 0 -10 -->
@@ -133,7 +140,7 @@
 	
 	<script>
 	
-		const VERSION = "1.8";
+		const VERSION = "1.9";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
