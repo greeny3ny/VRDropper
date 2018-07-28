@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+	
+	
+
 	<body>
 	<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 	<script src="https://sdk.altvr.com/libs/altspace.js/2.8.1/altspace.min.js"></script>
@@ -21,6 +24,15 @@
 	<script src="js/fall.js"></script>
 	
 	<script>
+	
+	/**
+	NOTES :
+		PUSH BUTTON TO START GAME
+		NO MORE THAN 8 PEOPLE AT A TIME
+		RANDOM SPAWN
+		RUNNING START
+	**/
+	
 		AFRAME.registerComponent('box_collide',
 		{
 			schema:  //does stuff
@@ -143,7 +155,7 @@
 	
 	<script>
 	
-		const VERSION = "1.10.1";
+		const VERSION = "1.10.2";
 		
 		const sim = new altspace.utilities.Simulation();
 		const scene = document.querySelector('a-scene');
@@ -151,6 +163,7 @@
 		const SCALE = 2;
 		const SIZE = 15;
 		const HEIGHT = 50;
+		const INTEGRITY = 7; //amount of times it will take for box to break
 		
 		var objects = [];
 		var objectNode = [];
@@ -351,7 +364,7 @@
 				console.log("resetBox clicked!");
 				wipeFirebase();
 				for (var i=0; i<SIZE*SIZE; i++){
-					writeFirebase(7);
+					writeFirebase(INTEGRITY);
 				}
 				refresh();
 			}
